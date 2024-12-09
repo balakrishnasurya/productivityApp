@@ -22,142 +22,76 @@
             <div class="quadrant" id="q1">
                 <h2>Urgent & Important</h2>
                 <div class="task-list" id="quadrant-1"></div>
-                <div class="quick-add-task" data-quadrant="1">
-                    <div class="add-task-trigger">
-                        <i class="fas fa-plus"></i>
-                        <span>Add Task</span>
-                    </div>
-                    <div class="task-input-form" style="display: none;">
-                        <input type="text" class="task-title-input" placeholder="What do you need to do?">
-                        <div class="task-details">
-                            <input type="datetime-local" class="task-time">
-                            <input type="text" class="task-description" placeholder="Add description">
-                        </div>
-                        <div class="task-actions">
-                            <button class="save-task"><i class="fas fa-check"></i></button>
-                            <button class="cancel-task"><i class="fas fa-times"></i></button>
-                        </div>
-                    </div>
-                </div>
+                <button class="add-task-btn" data-quadrant="1">
+                    <i class="fas fa-plus"></i> Add Task
+                </button>
             </div>
 
             <div class="quadrant" id="q2">
                 <h2>Not Urgent & Important</h2>
                 <div class="task-list" id="quadrant-2"></div>
-                <div class="quick-add-task" data-quadrant="2">
-                    <div class="add-task-trigger">
-                        <i class="fas fa-plus"></i>
-                        <span>Add Task</span>
-                    </div>
-                    <div class="task-input-form" style="display: none;">
-                        <input type="text" class="task-title-input" placeholder="What do you need to do?">
-                        <div class="task-details">
-                            <input type="datetime-local" class="task-time">
-                            <input type="text" class="task-description" placeholder="Add description">
-                        </div>
-                        <div class="task-actions">
-                            <button class="save-task"><i class="fas fa-check"></i></button>
-                            <button class="cancel-task"><i class="fas fa-times"></i></button>
-                        </div>
-                    </div>
-                </div>
+                <button class="add-task-btn" data-quadrant="2">
+                    <i class="fas fa-plus"></i> Add Task
+                </button>
             </div>
 
             <div class="quadrant" id="q3">
                 <h2>Urgent & Not Important</h2>
                 <div class="task-list" id="quadrant-3"></div>
-                <div class="quick-add-task" data-quadrant="3">
-                    <div class="add-task-trigger">
-                        <i class="fas fa-plus"></i>
-                        <span>Add Task</span>
-                    </div>
-                    <div class="task-input-form" style="display: none;">
-                        <input type="text" class="task-title-input" placeholder="What do you need to do?">
-                        <div class="task-details">
-                            <input type="datetime-local" class="task-time">
-                            <input type="text" class="task-description" placeholder="Add description">
-                        </div>
-                        <div class="task-actions">
-                            <button class="save-task"><i class="fas fa-check"></i></button>
-                            <button class="cancel-task"><i class="fas fa-times"></i></button>
-                        </div>
-                    </div>
-                </div>
+                <button class="add-task-btn" data-quadrant="3">
+                    <i class="fas fa-plus"></i> Add Task
+                </button>
             </div>
 
             <div class="quadrant" id="q4">
                 <h2>Not Urgent & Not Important</h2>
                 <div class="task-list" id="quadrant-4"></div>
-                <div class="quick-add-task" data-quadrant="4">
-                    <div class="add-task-trigger">
-                        <i class="fas fa-plus"></i>
-                        <span>Add Task</span>
-                    </div>
-                    <div class="task-input-form" style="display: none;">
-                        <input type="text" class="task-title-input" placeholder="What do you need to do?">
-                        <div class="task-details">
-                            <input type="datetime-local" class="task-time">
-                            <input type="text" class="task-description" placeholder="Add description">
-                        </div>
-                        <div class="task-actions">
-                            <button class="save-task"><i class="fas fa-check"></i></button>
-                            <button class="cancel-task"><i class="fas fa-times"></i></button>
-                        </div>
-                    </div>
-                </div>
+                <button class="add-task-btn" data-quadrant="4">
+                    <i class="fas fa-plus"></i> Add Task
+                </button>
             </div>
         </div>
 
         <!-- List View -->
         <div id="listView" class="priority-list">
             <div class="list-header">
-                <div class="header-content">
-                    <h2 class="section-title">All Tasks</h2>
-                    <div class="filter-sort">
-                        <select class="task-filter">
-                            <option value="all">All Quadrants</option>
-                            <option value="1">Urgent & Important</option>
-                            <option value="2">Not Urgent & Important</option>
-                            <option value="3">Urgent & Not Important</option>
-                            <option value="4">Not Urgent & Not Important</option>
-                        </select>
-                        <select class="task-sort">
-                            <option value="date">Sort by Date</option>
-                            <option value="priority">Sort by Priority</option>
-                            <option value="title">Sort by Title</option>
-                        </select>
-                    </div>
-                </div>
+                <h2>All Tasks</h2>
+                <button class="add-task-btn" data-quadrant="1">
+                    <i class="fas fa-plus"></i> Add Task
+                </button>
             </div>
-            
             <div class="tasks-container">
-                <div class="quick-add-task" data-quadrant="1">
-                    <div class="add-task-trigger">
-                        <i class="fas fa-plus"></i>
-                        <span>Add Task</span>
-                    </div>
-                    <div class="task-input-form" style="display: none;">
-                        <input type="text" class="task-title-input" placeholder="What do you need to do?">
-                        <div class="task-details">
-                            <input type="datetime-local" class="task-time">
-                            <input type="text" class="task-description" placeholder="Add description">
-                            <select class="task-quadrant">
-                                <option value="1">Urgent & Important</option>
-                                <option value="2">Not Urgent & Important</option>
-                                <option value="3">Urgent & Not Important</option>
-                                <option value="4">Not Urgent & Not Important</option>
-                            </select>
-                        </div>
-                        <div class="task-actions">
-                            <button class="save-task"><i class="fas fa-check"></i></button>
-                            <button class="cancel-task"><i class="fas fa-times"></i></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="task-list"></div>
+                <!-- Tasks will be rendered here -->
             </div>
         </div>
     </main>
+
+    <!-- Task Form Template -->
+    <template id="taskFormTemplate">
+        <div class="inline-task-form">
+            <div class="form-group">
+                <input type="text" class="task-title" placeholder="Task title" required>
+            </div>
+            <div class="form-group">
+                <textarea class="task-description" placeholder="Description (optional)" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <input type="datetime-local" class="task-due-date">
+            </div>
+            <div class="form-group">
+                <select class="task-quadrant">
+                    <option value="1">Urgent & Important</option>
+                    <option value="3">Urgent & Not Important</option>
+                    <option value="2">Not Urgent & Important</option>
+                    <option value="4">Not Urgent & Not Important</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="save-task">Save</button>
+                <button type="button" class="cancel-task">Cancel</button>
+            </div>
+        </div>
+    </template>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
