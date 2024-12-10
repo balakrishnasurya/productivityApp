@@ -10,8 +10,20 @@
 </head>
 <body>
     <div class="app-container">
+        <div class="view-controls mb-3">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-primary active" id="gridViewBtn">
+                    <i class="bi bi-grid"></i> Grid View
+                </button>
+                <button type="button" class="btn btn-primary" id="listViewBtn">
+                    <i class="bi bi-list-ul"></i> List View
+                </button>
+            </div>
+        </div>
         <h1>Four Quadrants Task Manager</h1>
-        <div class="quadrants-grid">
+        
+        <!-- Grid View -->
+        <div id="gridView" class="quadrants-grid">
             <div class="quadrant" id="quadrant-1">
                 <h3>Quadrant 1: Urgent & Important</h3>
                 <div class="task-list">
@@ -172,6 +184,103 @@
                 </div>
             </div>
         </div>
+
+        <!-- List View -->
+        <div id="listView" class="list-view" style="display: none;">
+            <div class="list-container">
+                <div class="task-section mb-4">
+                    <h3><i class="bi bi-1-circle"></i> Urgent & Important</h3>
+                    <div class="task-list" id="list-quadrant-1">
+                        {% for task in tasks if task.quadrant == 1 %}
+                        <div class="task-card {% if task.completed %}task-completed{% endif %}">
+                            <div class="task-content">
+                                <h5>{{ task.title }}</h5>
+                                <p>{{ task.description }}</p>
+                                {% if task.due_date %}
+                                <p class="text-muted">Due: {{ task.due_date }}</p>
+                                {% endif %}
+                            </div>
+                            <button class="btn-done" onclick="markTaskDone({{ task.id }}, {{ task.completed|tojson }})">
+                                <i class="bi {% if task.completed %}bi-check-circle-fill{% else %}bi-check-circle{% endif %}"></i>
+                            </button>
+                            <button class="btn-delete" onclick="deleteTask({{ task.id }})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="task-section mb-4">
+                    <h3><i class="bi bi-2-circle"></i> Not Urgent & Important</h3>
+                    <div class="task-list" id="list-quadrant-2">
+                        {% for task in tasks if task.quadrant == 2 %}
+                        <div class="task-card {% if task.completed %}task-completed{% endif %}">
+                            <div class="task-content">
+                                <h5>{{ task.title }}</h5>
+                                <p>{{ task.description }}</p>
+                                {% if task.due_date %}
+                                <p class="text-muted">Due: {{ task.due_date }}</p>
+                                {% endif %}
+                            </div>
+                            <button class="btn-done" onclick="markTaskDone({{ task.id }}, {{ task.completed|tojson }})">
+                                <i class="bi {% if task.completed %}bi-check-circle-fill{% else %}bi-check-circle{% endif %}"></i>
+                            </button>
+                            <button class="btn-delete" onclick="deleteTask({{ task.id }})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="task-section mb-4">
+                    <h3><i class="bi bi-3-circle"></i> Urgent & Not Important</h3>
+                    <div class="task-list" id="list-quadrant-3">
+                        {% for task in tasks if task.quadrant == 3 %}
+                        <div class="task-card {% if task.completed %}task-completed{% endif %}">
+                            <div class="task-content">
+                                <h5>{{ task.title }}</h5>
+                                <p>{{ task.description }}</p>
+                                {% if task.due_date %}
+                                <p class="text-muted">Due: {{ task.due_date }}</p>
+                                {% endif %}
+                            </div>
+                            <button class="btn-done" onclick="markTaskDone({{ task.id }}, {{ task.completed|tojson }})">
+                                <i class="bi {% if task.completed %}bi-check-circle-fill{% else %}bi-check-circle{% endif %}"></i>
+                            </button>
+                            <button class="btn-delete" onclick="deleteTask({{ task.id }})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="task-section mb-4">
+                    <h3><i class="bi bi-4-circle"></i> Not Urgent & Not Important</h3>
+                    <div class="task-list" id="list-quadrant-4">
+                        {% for task in tasks if task.quadrant == 4 %}
+                        <div class="task-card {% if task.completed %}task-completed{% endif %}">
+                            <div class="task-content">
+                                <h5>{{ task.title }}</h5>
+                                <p>{{ task.description }}</p>
+                                {% if task.due_date %}
+                                <p class="text-muted">Due: {{ task.due_date }}</p>
+                                {% endif %}
+                            </div>
+                            <button class="btn-done" onclick="markTaskDone({{ task.id }}, {{ task.completed|tojson }})">
+                                <i class="bi {% if task.completed %}bi-check-circle-fill{% else %}bi-check-circle{% endif %}"></i>
+                            </button>
+                            <button class="btn-delete" onclick="deleteTask({{ task.id }})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -226,6 +335,26 @@
                 });
             }
         }
+
+        // View switching functionality
+        const gridViewBtn = document.getElementById('gridViewBtn');
+        const listViewBtn = document.getElementById('listViewBtn');
+        const gridView = document.getElementById('gridView');
+        const listView = document.getElementById('listView');
+
+        gridViewBtn.addEventListener('click', () => {
+            gridView.style.display = 'grid';
+            listView.style.display = 'none';
+            gridViewBtn.classList.add('active');
+            listViewBtn.classList.remove('active');
+        });
+
+        listViewBtn.addEventListener('click', () => {
+            gridView.style.display = 'none';
+            listView.style.display = 'block';
+            listViewBtn.classList.add('active');
+            gridViewBtn.classList.remove('active');
+        });
     </script>
 </body>
 </html>

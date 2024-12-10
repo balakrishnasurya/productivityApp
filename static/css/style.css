@@ -297,6 +297,61 @@ h1 {
     background: var(--text-dark);
 }
 
+.view-controls {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.view-controls .btn-group {
+    display: inline-flex;
+    gap: 0.5rem;
+}
+
+.view-controls .btn {
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.view-controls .btn i {
+    font-size: 1.1rem;
+}
+
+.list-view {
+    background-color: var(--card-grey);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.list-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.task-section {
+    margin-bottom: 2rem;
+}
+
+.task-section h3 {
+    color: var(--text-dark);
+    font-size: 1.1rem;
+    margin: 0 0 1rem 0;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--primary-red);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.task-section h3 i {
+    color: var(--primary-red);
+    font-size: 1.2rem;
+}
+
 @media (max-width: 768px) {
     html, body {
         height: auto;
