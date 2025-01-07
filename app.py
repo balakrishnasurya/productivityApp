@@ -16,7 +16,7 @@ db.init_app(app)
 
 @app.route('/')
 def index():
-    tasks = Task.query.all()
+    tasks = Task.query.order_by(Task.quadrant).all()
     return render_template('index.html', tasks=tasks)
 
 @app.route('/add_task', methods=['POST'])
@@ -41,7 +41,7 @@ def toggle_task(task_id):
     data = request.get_json()
     task.completed = data.get('completed', False)
     db.session.commit()
-    return '', 204
+    return jsonify({'success': True}), 200
 
 if __name__ == '__main__':
     with app.app_context():
