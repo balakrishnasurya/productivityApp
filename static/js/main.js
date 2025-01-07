@@ -76,6 +76,12 @@ document.addEventListener('DOMContentLoaded', function() {
         listView.style.display = 'none';
         gridViewBtn.classList.add('active');
         listViewBtn.classList.remove('active');
+        const listTaskForm = document.querySelector('.list-task-form');
+        const listAddButton = document.querySelector('.btn-add-task-list');
+        if (listTaskForm) {
+            listTaskForm.style.display = 'none';
+            listAddButton.style.opacity = '1';
+        }
     });
 
     listViewBtn.addEventListener('click', () => {
@@ -85,3 +91,17 @@ document.addEventListener('DOMContentLoaded', function() {
         gridViewBtn.classList.remove('active');
     });
 });
+
+// Add this to your existing JavaScript
+function toggleListTaskForm() {
+    const form = document.querySelector('.list-task-form');
+    const button = document.querySelector('.btn-add-task-list');
+    
+    if (form.style.display === 'none') {
+        form.style.display = 'block';
+        button.style.opacity = '0.5';
+    } else {
+        form.style.display = 'none';
+        button.style.opacity = '1';
+    }
+}

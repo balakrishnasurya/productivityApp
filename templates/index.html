@@ -216,6 +216,42 @@
         <!-- List View -->
         <div id="listView" class="list-view" style="display: none;">
             <div class="list-container">
+                <!-- Add Task Button for List View -->
+                <div class="list-header">
+                    <button class="btn-add-task-list" onclick="toggleListTaskForm()">
+                        <i class="bi bi-plus-circle"></i>
+                        <span>Add Task</span>
+                    </button>
+                </div>
+
+                <!-- Task Form for List View -->
+                <form action="{{ url_for('add_task') }}" method="POST" class="add-task-form list-task-form" style="display: none;">
+                    <div class="task-input-group">
+                        <input type="text" class="form-control" name="title" placeholder="Task title" required>
+                        <div class="task-details">
+                            <input type="date" class="form-control" name="due_date" placeholder="Time">
+                            <textarea class="form-control" name="description" placeholder="Description"></textarea>
+                        </div>
+                        <div class="quadrant-selector">
+                            <select name="quadrant" class="form-control" required>
+                                <option value="1">Urgent & Important</option>
+                                <option value="2">Not Urgent & Important</option>
+                                <option value="3">Urgent & Not Important</option>
+                                <option value="4">Not Urgent & Not Important</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-confirm">
+                                <i class="bi bi-check-lg"></i>
+                            </button>
+                            <button type="button" class="btn-cancel" onclick="toggleListTaskForm()">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Existing Task List -->
                 <div class="task-list">
                     {% for task in tasks|sort(attribute='quadrant') if not task.completed %}
                     <div class="task-card" data-task-id="{{ task.id }}" data-quadrant="{{ task.quadrant }}">
