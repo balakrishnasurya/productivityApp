@@ -8,8 +8,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Delete the existing database file if it exists
-if os.path.exists('tasks.db'):
-    os.remove('tasks.db')
+#if os.path.exists('tasks.db'):
+#    os.remove('tasks.db')
 
 # Initialize the database with the app
 db.init_app(app)
