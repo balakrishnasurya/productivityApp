@@ -10,5 +10,8 @@ class Task(db.Model):
     quadrant = db.Column(db.Integer, nullable=False)  # 1-4
     due_date = db.Column(db.DateTime)
     completed = db.Column(db.Boolean, default=False)
+    completed_at = db.Column(db.DateTime)
+    is_deleted = db.Column(db.Boolean, default=False)
+    deleted_at = db.Column(db.DateTime)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

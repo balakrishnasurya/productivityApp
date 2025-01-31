@@ -38,10 +38,12 @@ A modern task management web application based on the Eisenhower Matrix (also kn
   - Responsive layout for all screen sizes
   - Smooth animations and transitions
   - Visual feedback for user actions
+  - Collapsible history sidebar
 - **Interactive Elements**
   - Hover effects on tasks and buttons
   - Easy-to-use task creation forms
   - Intuitive action buttons
+  - Keyboard shortcuts for view switching
 
 ## Technical Stack
 
@@ -101,8 +103,11 @@ four-quadrants-task-manager/
 ├── models.py             # Database models
 ├── requirements.txt      # Project dependencies
 ├── static/
-│   └── css/
-│       └── style.css    # Application styles
+│   ├── css/
+│   │   └── style.css    # Application styles
+│   └── js/
+│       ├── main.js      # Core application logic
+│       └── history.js   # History sidebar functionality
 └── templates/
     └── index.html       # Main application template
 ```
@@ -122,6 +127,17 @@ four-quadrants-task-manager/
 3. **Switching Views**
    - Toggle between Grid and List views using the view controls
    - List view shows tasks sorted by priority with color indicators
+
+### Task History
+- **Accessing History**
+  - Click the sidebar toggle button or use Ctrl+Shift+H
+  - Switch between Completed and Deleted tabs
+  - View task completion/deletion timestamps
+  
+- **Managing History**
+  - Restore deleted tasks to their original quadrants
+  - Permanently delete tasks from history
+  - Sort tasks by date or original quadrant
 
 ## Development
 
@@ -153,3 +169,5 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Data export/import functionality
 - Dark mode theme
 - Mobile application
+- Advanced history filtering and search
+- Batch operations for historical tasks
