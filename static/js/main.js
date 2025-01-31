@@ -291,6 +291,31 @@ async function handleTaskSubmit(event) {
     }
 }
 
+// Update the sidebar navigation functionality
+function setupSidebarNav() {
+    const navItems = document.querySelectorAll('.sidebar-nav .nav-item:not(.disabled)');
+    
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            // Remove active class from all items and contents
+            document.querySelectorAll('.nav-item').forEach(navItem => {
+                navItem.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Add active class to clicked item and its content
+            item.classList.add('active');
+            const tabId = item.getAttribute('data-tab');
+            document.getElementById(tabId).classList.add('active');
+            
+            // Load data for the active tab
+            loadHistoryData();
+        });
+    });
+}
+
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     // Set default view
@@ -352,6 +377,8 @@ document.addEventListener('DOMContentLoaded', function() {
             restoreTask(taskId);
         }
     });
+
+    setupSidebarNav();
 });
 
 // Keyboard shortcuts

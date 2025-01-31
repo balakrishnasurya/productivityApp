@@ -31,7 +31,16 @@
         <div class="grid-container" id="gridView">
             <!-- Quadrant 1: Urgent & Important -->
             <div class="quadrant" id="quadrant-1" data-quadrant="1">
-                <h2>Quadrant 1: Urgent & Important</h2>
+                <div class="quadrant-header q1">
+                    <div class="header-content">
+                        <div class="header-text">
+                            <div class="title-wrapper">
+                                <span class="quadrant-number">Q1:</span>
+                                <h2>Urgent & Important</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="tasks-container">
                     {% for task in tasks if task.quadrant == 1 and not task.completed and not task.is_deleted %}
                     <div class="task-card" data-task-id="{{ task.id }}" data-quadrant="1">
@@ -73,7 +82,16 @@
 
             <!-- Quadrant 2: Not Urgent & Important -->
             <div class="quadrant" id="quadrant-2" data-quadrant="2">
-                <h2>Quadrant 2: Not Urgent & Important</h2>
+                <div class="quadrant-header q2">
+                    <div class="header-content">
+                        <div class="header-text">
+                            <div class="title-wrapper">
+                                <span class="quadrant-number">Q2:</span>
+                                <h2>Not Urgent & Important</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="tasks-container">
                     {% for task in tasks if task.quadrant == 2 and not task.completed and not task.is_deleted %}
                     <div class="task-card" data-task-id="{{ task.id }}" data-quadrant="2">
@@ -115,7 +133,16 @@
 
             <!-- Quadrant 3 -->
             <div class="quadrant" id="quadrant-3" data-quadrant="3">
-                <h2>Quadrant 3: Urgent & Not Important</h2>
+                <div class="quadrant-header q3">
+                    <div class="header-content">
+                        <div class="header-text">
+                            <div class="title-wrapper">
+                                <span class="quadrant-number">Q3:</span>
+                                <h2>Urgent & Not Important</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="tasks-container">
                     {% for task in tasks if task.quadrant == 3 and not task.completed and not task.is_deleted %}
                     <div class="task-card" data-task-id="{{ task.id }}" data-quadrant="3">
@@ -157,7 +184,16 @@
 
             <!-- Quadrant 4 -->
             <div class="quadrant" id="quadrant-4" data-quadrant="4">
-                <h2>Quadrant 4: Not Urgent & Not Important</h2>
+                <div class="quadrant-header q4">
+                    <div class="header-content">
+                        <div class="header-text">
+                            <div class="title-wrapper">
+                                <span class="quadrant-number">Q4:</span>
+                                <h2>Not Urgent & Not Important</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="tasks-container">
                     {% for task in tasks if task.quadrant == 4 and not task.completed and not task.is_deleted %}
                     <div class="task-card" data-task-id="{{ task.id }}" data-quadrant="4">
@@ -266,28 +302,30 @@
                 <button class="btn-close" onclick="toggleSidebar()"></button>
             </div>
             
-            <!-- Horizontal Tab Navigation -->
-            <div class="history-tabs-wrapper">
-                <div class="history-tabs">
-                    <button class="history-tab-btn active" data-tab="completed">
-                        Completed <span class="badge bg-success" id="completedCount">0</span>
-                    </button>
-                    <button class="history-tab-btn" data-tab="deleted">
-                        Deleted <span class="badge bg-danger" id="deletedCount">0</span>
-                    </button>
-                    <!-- Future tabs can be added here -->
+            <!-- Vertical Navigation List -->
+            <div class="sidebar-nav">
+                <div class="nav-item active" data-tab="completed">
+                    <span class="nav-text">Completed</span>
+                    <span class="badge bg-success" id="completedCount">0</span>
+                </div>
+                <div class="nav-item" data-tab="deleted">
+                    <span class="nav-text">Deleted</span>
+                    <span class="badge bg-danger" id="deletedCount">0</span>
+                </div>
+                <div class="nav-item disabled">
+                    <span class="nav-text">New Features</span>
+                    <small class="coming-soon">(Coming Soon)</small>
                 </div>
             </div>
 
-            <!-- Tab Content -->
-            <div class="history-content">
-                <div class="history-tab-content active" id="completed">
+            <!-- Content Area -->
+            <div class="sidebar-content">
+                <div class="tab-content active" id="completed">
                     <div id="completedTasks" class="history-task-list"></div>
                 </div>
-                <div class="history-tab-content" id="deleted">
+                <div class="tab-content" id="deleted">
                     <div id="deletedTasks" class="history-task-list"></div>
                 </div>
-                <!-- Future tab content sections can be added here -->
             </div>
         </div>
     </div>
