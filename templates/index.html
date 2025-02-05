@@ -303,6 +303,8 @@
             </div>
             
             <!-- Vertical Navigation List -->
+            <!-- In the sidebar-nav section -->
+            <!-- Update the goals nav-item in the sidebar-nav section -->
             <div class="sidebar-nav">
                 <div class="nav-item active" data-tab="completed">
                     <span class="nav-text">Completed</span>
@@ -312,19 +314,27 @@
                     <span class="nav-text">Deleted</span>
                     <span class="badge bg-danger" id="deletedCount">0</span>
                 </div>
-                <div class="nav-item disabled">
-                    <span class="nav-text">New Features</span>
-                    <small class="coming-soon">(Coming Soon)</small>
-                </div>
+                <a href="{{ url_for('goals') }}" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <span class="nav-text">Goals</span>
+                    <span class="badge bg-primary" id="goalsCount">0</span>
+                </a>
             </div>
 
-            <!-- Content Area -->
+            <!-- In the sidebar-content section -->
+            <!-- Add this inside the sidebar-content div -->
             <div class="sidebar-content">
                 <div class="tab-content active" id="completed">
                     <div id="completedTasks" class="history-task-list"></div>
                 </div>
                 <div class="tab-content" id="deleted">
                     <div id="deletedTasks" class="history-task-list"></div>
+                </div>
+                <div class="tab-content" id="goals">
+                    <div class="text-center p-3">
+                        <a href="{{ url_for('goals') }}" class="btn btn-primary">
+                            <i class="bi bi-arrow-right"></i> Go to Goals Page
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

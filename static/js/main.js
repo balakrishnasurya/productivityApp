@@ -378,6 +378,95 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    async function loadGoals() {
+        try {
+            const response = await fetch('/api/goals');
+            if (!response.ok) throw new Error('Failed to fetch goals');
+            const goals = await response.json();
+            
+            document.getElementById('goalsCount').textContent = goals.length;
+            renderGoals(goals);
+        } catch (error) {
+            console.error('Error loading goals:', error);
+        }
+    }
+
+    function renderGoals(goals) {
+        const container = document.getElementById('goalsList');
+        if (!goals.length) {
+            container.innerHTML = '<div class="empty-state">No goals yet</div>';
+            return;
+        }
+    
+        container.innerHTML = goals.map(goal => `
+            <div class="goal-card" data-goal-id="${goal.id}">
+                <div class="goal-header">
+                    <h5>${goal.title}</h5>
+                    <div class="countdown" data-deadline="${goal.deadline}"></div>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" 
+                         style="width: ${goal.progress}%" 
+                         aria-valuenow="${goal.progress}" 
+                         aria-valuemin="0" 
+                         aria-valuemax="100">
+                        ${goal.progress}%
+                    </div>
+                </div>
+                <div class="goal-details">
+                    <div class="objectives">
+                        ${formatObjectives(goal.objectives)}
+                    </div>
+                    <div class="review-section">
+                        <div class="works-well">
+                            <h6>✅ What works</h6>
+                            <p>${goal.works_well || 'No notes yet'}</p>
+                        </div>
+                        <div class="needs-change">
+                            <h6>❌ Needs change</h6>
+                            <p>${goal.needs_change || 'No notes yet'}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    
+        // Initialize countdowns
+        document.querySelectorAll('.countdown').forEach(el => {
+            const deadline = new Date(el.dataset.deadline);
+            updateCountdown(el, deadline);
+            setInterval(() => updateCountdown(el, deadline), 1000);
+        });
+    }
+
+    function updateCountdown(element, deadline) {
+        const now = new Date();
+        const diff = deadline - now;
+        
+        const units = {
+            w: 604800000,
+            d: 86400000,
+            h: 3600000,
+            m: 60000,
+            s: 1000
+        };
+    
+        let remaining = Math.abs(diff);
+        let output = '';
+    
+        for (const [unit, ms] of Object.entries(units)) {
+            if (remaining >= ms) {
+                const value = Math.floor(remaining / ms);
+                output += `${value}${unit} `;
+                remaining %= ms;
+            }
+        }
+    
+        element.textContent = `${output.trim()} ${diff < 0 ? 'ago' : 'remaining'}`;
+        element.classList.toggle('overdue', diff < 0);
+    }
+
+    // Add to existing setupSidebarNav function
     setupSidebarNav();
 });
 
