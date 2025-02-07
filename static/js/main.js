@@ -5,6 +5,9 @@ function setView(viewType) {
     const gridViewBtn = document.querySelector('button[onclick="setView(\'grid\')"]');
     const listViewBtn = document.querySelector('button[onclick="setView(\'list\')"]');
 
+    // Check if elements exist before trying to access them
+    if (!gridView || !listView) return;
+
     if (viewType === 'grid') {
         gridView.style.display = 'grid';
         listView.style.display = 'none';

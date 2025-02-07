@@ -1,18 +1,21 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, Blueprint
 from datetime import datetime
 import os
-from models import db, Task
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from models import db, Task, Goal, GoalAction, WorksWellItem, NeedsChangeItem
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Delete the existing database file if it exists
 #if os.path.exists('tasks.db'):
 #    os.remove('tasks.db')
 
-# Initialize the database with the app
+# Initialize the db with the app
 db.init_app(app)
+migrate = Migrate(app, db, directory='migrations')
 
 api = Blueprint('api', __name__)
 
@@ -129,6 +132,93 @@ def get_deleted_tasks():
         'deleted_at': task.deleted_at.isoformat() if task.deleted_at else None,
         'due_date': task.due_date.isoformat() if task.due_date else None
     } for task in tasks])
+
+@app.route('/api/goals/<int:goal_id>')
+def get_goal(goal_id):
+    goal = Goal.query.get_or_404(goal_id)
+    return jsonify({
+        'id': goal.id,
+        'title': goal.title,
+        'deadline': goal.deadline.isoformat(),
+        'objectives': goal.objectives,
+        'must_do': goal.must_do,
+        'created_at': goal.created_at.isoformat(),
+        'last_updated': goal.last_updated.isoformat()
+    })
+
+@app.route('/api/goals/<int:goal_id>/works-well')
+def get_works_well(goal_id):
+    items = WorksWellItem.query.filter_by(goal_id=goal_id).order_by(WorksWellItem.created_at.desc()).all()
+    return jsonify([{
+        'id': item.id,
+        'description': item.description,
+        'created_at': item.created_at.isoformat()
+    } for item in items])
+
+@app.route('/api/goals/<int:goal_id>/needs-change')
+def get_needs_change(goal_id):
+    items = NeedsChangeItem.query.filter_by(goal_id=goal_id).order_by(NeedsChangeItem.created_at.desc()).all()
+    return jsonify([{
+        'id': item.id,
+        'description': item.description,
+        'created_at': item.created_at.isoformat()
+    } for item in items])
+
+@app.route('/api/goals/<int:goal_id>/<string:list_type>', methods=['POST'])
+def add_list_item(goal_id, list_type):
+    data = request.get_json()
+    if list_type == 'worksWell':
+        item = WorksWellItem(goal_id=goal_id, description=data['description'])
+    else:
+        item = NeedsChangeItem(goal_id=goal_id, description=data['description'])
+    
+    db.session.add(item)
+    db.session.commit()
+    return jsonify({'success': True, 'id': item.id})
+
+@app.route('/api/goals/<int:goal_id>/<string:list_type>/<int:item_id>', methods=['DELETE'])
+def delete_list_item(goal_id, list_type, item_id):
+    if list_type == 'worksWell':
+        item = WorksWellItem.query.get_or_404(item_id)
+    else:
+        item = NeedsChangeItem.query.get_or_404(item_id)
+    
+    db.session.delete(item)
+    db.session.commit()
+    return jsonify({'success': True})
+
+@app.route('/goals')
+def goals():
+    return render_template('goals.html')
+
+@app.route('/goals/<int:goal_id>')
+def goal_detail(goal_id):
+    return render_template('goal_detail.html')
+
+@app.route('/api/goals', methods=['GET'])
+def get_goals():
+    goals = Goal.query.order_by(Goal.created_at.desc()).all()
+    return jsonify([{
+        'id': goal.id,
+        'title': goal.title,
+        'deadline': goal.deadline.isoformat(),
+        'objectives': goal.objectives,
+        'must_do': goal.must_do,
+        'created_at': goal.created_at.isoformat()
+    } for goal in goals])
+
+@app.route('/api/goals', methods=['POST'])
+def add_goal():
+    data = request.get_json()
+    goal = Goal(
+        title=data['title'],
+        deadline=datetime.fromisoformat(data['deadline']),
+        objectives=data['objectives'],
+        must_do=data['mustDo']
+    )
+    db.session.add(goal)
+    db.session.commit()
+    return jsonify({'success': True, 'id': goal.id})
 
 if __name__ == '__main__':
     with app.app_context():
