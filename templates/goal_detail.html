@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}{{ goal.title }} - Goal Details{% endblock %}
+
+{% block content %}
+<div class="goal-detail-page">
+    <!-- Header Section -->
+    <header class="goal-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="goal-logo">
+                    <i class="bi bi-asterisk"></i>
+                </div>
+                <h1 id="goalTitle">{{ goal.title }}</h1>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-outline-primary" onclick="history.back()">
+                    <i class="bi bi-arrow-left"></i> Back to Goals
+                </button>
+                <button class="btn btn-primary" onclick="editGoal({{ goal.id }})">
+                    <i class="bi bi-pencil"></i> Edit
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="goal-content">
+        <!-- Main Info Section -->
+        <div class="goal-info-section">
+            <div class="info-card deadline-info">
+                <i class="bi bi-hourglass-top"></i>
+                <div class="info-content">
+                    <h3>Deadline</h3>
+                    <p id="goalDeadline">{{ goal.deadline.strftime('%B %d, %Y') }}</p>
+                    <div class="timer-display" id="countdown" data-deadline="{{ goal.deadline.isoformat() }}">
+                        <!-- Timer will be updated via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card objective-info">
+                <i class="bi bi-flag"></i>
+                <div class="info-content">
+                    <h3>Objective</h3>
+                    <p id="goalObjective">{{ goal.objectives }}</p>
+                </div>
+            </div>
+
+            <div class="info-card must-do-info">
+                <i class="bi bi-bullseye"></i>
+                <div class="info-content">
+                    <h3>Must Do</h3>
+                    <p id="goalMustDo">{{ goal.must_do }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section">
+            <div class="progress-header">
+                <h2>Progress Tracking</h2>
+                <div class="progress-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Days Streak</span>
+                        <span class="stat-value" id="daysStreak">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Completion Rate</span>
+                        <span class="stat-value" id="completionRate">0%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="progress-chart" id="progressChart">
+                <!-- Progress chart will be rendered via JS -->
+            </div>
+        </div>
+
+        <!-- Action Sections -->
+        <div class="action-sections">
+            <div class="section-works-well">
+                <h3><i class="bi bi-check-circle"></i> What Works (Do More)</h3>
+                <div class="action-list" id="worksWellList">
+                    <ul class="items-list">
+                        {% for item in works_well %}
+                        <li class="action-item">
+                            <span>{{ item.content }}</span>
+                            <div class="item-actions">
+                                <button class="btn-icon" onclick="editItem('{{ item.id }}', 'works-well')">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn-icon" onclick="deleteItem('{{ item.id }}', 'works-well')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <button class="btn btn-success btn-add" onclick="addNewItem('works-well')">
+                        <i class="bi bi-plus"></i> Add What Works
+                    </button>
+                </div>
+            </div>
+
+            <div class="section-needs-change">
+                <h3><i class="bi bi-x-circle"></i> What Needs Change</h3>
+                <div class="action-list" id="needsChangeList">
+                    <ul class="items-list">
+                        {% for item in needs_change %}
+                        <li class="action-item">
+                            <span>{{ item.content }}</span>
+                            <div class="item-actions">
+                                <button class="btn-icon" onclick="editItem('{{ item.id }}', 'needs-change')">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn-icon" onclick="deleteItem('{{ item.id }}', 'needs-change')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <button class="btn btn-danger btn-add" onclick="addNewItem('needs-change')">
+                        <i class="bi bi-plus"></i> Add What Needs Change
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Habit Tracking Section -->
+        <div class="habit-tracking-section">
+            <h2>Habit Tracking</h2>
+            <div class="habit-calendar" id="habitCalendar">
+                <!-- Calendar will be rendered via JS -->
+            </div>
+            <div class="daily-checkin">
+                <h3>Daily Check-in</h3>
+                <div class="mood-tracker">
+                    <button class="mood-btn" data-mood="great">😄</button>
+                    <button class="mood-btn" data-mood="good">🙂</button>
+                    <button class="mood-btn" data-mood="neutral">😐</button>
+                    <button class="mood-btn" data-mood="bad">😕</button>
+                    <button class="mood-btn" data-mood="terrible">😢</button>
+                </div>
+                <textarea class="daily-notes" placeholder="Add notes about today's progress..."></textarea>
+                <button class="btn btn-primary btn-save-checkin">Save Check-in</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Item Modal -->
+<div class="modal fade" id="editItemModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <textarea class="form-control" id="editItemContent"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveEditedItem()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Initialize goal data for JavaScript access
+    const goalData = {
+        id: {{ goal.id }},
+        title: "{{ goal.title }}",
+        deadline: "{{ goal.deadline.isoformat() }}",
+        objectives: `{{ goal.objectives|safe }}`,
+        mustDo: `{{ goal.must_do|safe }}`
+    };
+</script>
+<script src="{{ url_for('static', filename='js/goal-detail.js') }}"></script>
+{% endblock %}

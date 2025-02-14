@@ -9,17 +9,13 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Delete the existing database file if it exists
-#if os.path.exists('tasks.db'):
-#    os.remove('tasks.db')
 
-# Initialize the db with the app
 db.init_app(app)
-migrate = Migrate(app, db, directory='migrations')
+migrate = Migrate(app, db)
 
 api = Blueprint('api', __name__)
 
-@api.route('/api/completed-tasks', methods=['GET'])
+@api.route('/completed-tasks', methods=['GET'])
 def get_completed_tasks():
     tasks = Task.query.filter_by(completed=True, is_deleted=False).order_by(Task.completed_at.desc()).all()
     return jsonify([{
@@ -31,7 +27,7 @@ def get_completed_tasks():
         'due_date': task.due_date.isoformat() if task.due_date else None
     } for task in tasks])
 
-@api.route('/api/deleted-tasks', methods=['GET'])
+@api.route('/deleted-tasks', methods=['GET'])
 def get_deleted_tasks():
     tasks = Task.query.filter_by(is_deleted=True).order_by(Task.deleted_at.desc()).all()
     return jsonify([{
@@ -43,7 +39,7 @@ def get_deleted_tasks():
         'due_date': task.due_date.isoformat() if task.due_date else None
     } for task in tasks])
 
-@api.route('/api/restore-task/<int:task_id>', methods=['POST'])
+@api.route('/restore-task/<int:task_id>', methods=['POST'])
 def restore_task(task_id):
     task = Task.query.get_or_404(task_id)
     task.is_deleted = False
@@ -109,30 +105,6 @@ def delete_task(task_id):
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/completed-tasks', methods=['GET'])
-def get_completed_tasks():
-    tasks = Task.query.filter_by(completed=True, is_deleted=False).order_by(Task.completed_at.desc()).all()
-    return jsonify([{
-        'id': task.id,
-        'title': task.title,
-        'description': task.description,
-        'quadrant': task.quadrant,
-        'completed_at': task.completed_at.isoformat() if task.completed_at else None,
-        'due_date': task.due_date.isoformat() if task.due_date else None
-    } for task in tasks])
-
-@app.route('/api/deleted-tasks', methods=['GET'])
-def get_deleted_tasks():
-    tasks = Task.query.filter_by(is_deleted=True).order_by(Task.deleted_at.desc()).all()
-    return jsonify([{
-        'id': task.id,
-        'title': task.title,
-        'description': task.description,
-        'quadrant': task.quadrant,
-        'deleted_at': task.deleted_at.isoformat() if task.deleted_at else None,
-        'due_date': task.due_date.isoformat() if task.due_date else None
-    } for task in tasks])
-
 @app.route('/api/goals/<int:goal_id>')
 def get_goal(goal_id):
     goal = Goal.query.get_or_404(goal_id)
@@ -193,7 +165,10 @@ def goals():
 
 @app.route('/goals/<int:goal_id>')
 def goal_detail(goal_id):
-    return render_template('goal_detail.html')
+    goal = Goal.query.get_or_404(goal_id)
+    works_well = WorksWellItem.query.filter_by(goal_id=goal_id).all()
+    needs_change = NeedsChangeItem.query.filter_by(goal_id=goal_id).all()
+    return render_template('goal_detail.html', goal=goal, works_well=works_well, needs_change=needs_change)
 
 @app.route('/api/goals', methods=['GET'])
 def get_goals():
@@ -219,6 +194,13 @@ def add_goal():
     db.session.add(goal)
     db.session.commit()
     return jsonify({'success': True, 'id': goal.id})
+
+@app.route('/pomodoro')
+def pomodoro():
+    return render_template('pomodoro.html')
+
+# Register the Blueprint
+app.register_blueprint(api, url_prefix='/api')
 
 if __name__ == '__main__':
     with app.app_context():

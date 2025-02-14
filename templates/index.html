@@ -1,340 +1,151 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Four Quadrants Task Manager</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <div class="sidebar-overlay"></div>
-    <div class="app-container">
-        <div class="app-header">
-            <button class="btn btn-icon sidebar-toggle" onclick="toggleSidebar()">
-                <i class="bi bi-list"></i>
-            </button>
-            <div class="view-controls">
-                <button class="btn btn-primary active" onclick="setView('grid')">
-                    <i class="bi bi-grid"></i> Grid View
-                </button>
-                <button class="btn btn-primary" onclick="setView('list')">
-                    <i class="bi bi-list-ul"></i> List View
-                </button>
-            </div>
-            <div class="spacer"></div>
-        </div>
-        <h1>Four Quadrants Task Manager</h1>
-        
-        <!-- Grid View -->
-        <div class="grid-container" id="gridView">
-            <!-- Quadrant 1: Urgent & Important -->
-            <div class="quadrant" id="quadrant-1" data-quadrant="1">
-                <div class="quadrant-header q1">
-                    <div class="header-content">
-                        <div class="header-text">
-                            <div class="title-wrapper">
-                                <span class="quadrant-number">Q1:</span>
-                                <h2>Urgent & Important</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tasks-container">
-                    {% for task in tasks if task.quadrant == 1 and not task.completed and not task.is_deleted %}
-                    <div class="task-card" data-task-id="{{ task.id }}" data-quadrant="1">
-                        <div class="task-content">
-                            <div class="task-priority-indicator quadrant-1"></div>
-                            <h5 class="task-title">{{ task.title }}</h5>
-                            <p class="task-description">{{ task.description }}</p>
-                            {% if task.due_date %}
-                            <p class="task-due-date">Due: {{ task.due_date }}</p>
-                            {% endif %}
-                        </div>
-                        <div class="task-actions">
-                            <button class="btn-done" onclick="markTaskDone({{ task.id }}, false, this)">
-                                <i class="bi bi-check-circle"></i>
-                            </button>
-                            <button class="btn-delete" onclick="deleteTask({{ task.id }})">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                <button class="btn-add-task" onclick="toggleTaskForm(1)">
-                    <i class="bi bi-plus"></i> Add Task
-                </button>
-                <form class="add-task-form" method="POST" action="/add_task">
-                    <div class="form-group">
-                        <input type="text" name="title" class="form-control mb-2" placeholder="Task title" required>
-                        <textarea name="description" class="form-control mb-2" placeholder="Description"></textarea>
-                        <input type="date" name="due_date" class="form-control mb-2">
-                        <input type="hidden" name="quadrant" value="1">
-                        <div class="form-buttons">
-                            <button type="submit" class="btn btn-primary">Add</button>
-                            <button type="button" class="btn btn-secondary btn-cancel-task">Cancel</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
+{% extends "base.html" %}
 
-            <!-- Quadrant 2: Not Urgent & Important -->
-            <div class="quadrant" id="quadrant-2" data-quadrant="2">
-                <div class="quadrant-header q2">
-                    <div class="header-content">
-                        <div class="header-text">
-                            <div class="title-wrapper">
-                                <span class="quadrant-number">Q2:</span>
-                                <h2>Not Urgent & Important</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tasks-container">
-                    {% for task in tasks if task.quadrant == 2 and not task.completed and not task.is_deleted %}
-                    <div class="task-card" data-task-id="{{ task.id }}" data-quadrant="2">
-                        <div class="task-content">
-                            <div class="task-priority-indicator quadrant-2"></div>
-                            <h5 class="task-title">{{ task.title }}</h5>
-                            <p class="task-description">{{ task.description }}</p>
-                            {% if task.due_date %}
-                            <p class="task-due-date">Due: {{ task.due_date }}</p>
-                            {% endif %}
-                        </div>
-                        <div class="task-actions">
-                            <button class="btn-done" onclick="markTaskDone({{ task.id }}, false, this)">
-                                <i class="bi bi-check-circle"></i>
-                            </button>
-                            <button class="btn-delete" onclick="deleteTask({{ task.id }})">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                <button class="btn-add-task" onclick="toggleTaskForm(2)">
-                    <i class="bi bi-plus"></i> Add Task
-                </button>
-                <form class="add-task-form" method="POST" action="/add_task">
-                    <div class="form-group">
-                        <input type="text" name="title" class="form-control mb-2" placeholder="Task title" required>
-                        <textarea name="description" class="form-control mb-2" placeholder="Description"></textarea>
-                        <input type="date" name="due_date" class="form-control mb-2">
-                        <input type="hidden" name="quadrant" value="2">
-                        <div class="form-buttons">
-                            <button type="submit" class="btn btn-primary">Add</button>
-                            <button type="button" class="btn btn-secondary btn-cancel-task">Cancel</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
+{% block title %}Four Quadrants Task Manager{% endblock %}
 
-            <!-- Quadrant 3 -->
-            <div class="quadrant" id="quadrant-3" data-quadrant="3">
-                <div class="quadrant-header q3">
-                    <div class="header-content">
-                        <div class="header-text">
-                            <div class="title-wrapper">
-                                <span class="quadrant-number">Q3:</span>
-                                <h2>Urgent & Not Important</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tasks-container">
-                    {% for task in tasks if task.quadrant == 3 and not task.completed and not task.is_deleted %}
-                    <div class="task-card" data-task-id="{{ task.id }}" data-quadrant="3">
-                        <div class="task-content">
-                            <div class="task-priority-indicator quadrant-3"></div>
-                            <h5 class="task-title">{{ task.title }}</h5>
-                            <p class="task-description">{{ task.description }}</p>
-                            {% if task.due_date %}
-                            <p class="task-due-date">Due: {{ task.due_date }}</p>
-                            {% endif %}
-                        </div>
-                        <div class="task-actions">
-                            <button class="btn-done" onclick="markTaskDone({{ task.id }}, false, this)">
-                                <i class="bi bi-check-circle"></i>
-                            </button>
-                            <button class="btn-delete" onclick="deleteTask({{ task.id }})">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                <button class="btn-add-task" onclick="toggleTaskForm(3)">
-                    <i class="bi bi-plus"></i> Add Task
-                </button>
-                <form class="add-task-form" method="POST" action="/add_task">
-                    <div class="form-group">
-                        <input type="text" name="title" class="form-control mb-2" placeholder="Task title" required>
-                        <textarea name="description" class="form-control mb-2" placeholder="Description"></textarea>
-                        <input type="date" name="due_date" class="form-control mb-2">
-                        <input type="hidden" name="quadrant" value="3">
-                        <div class="form-buttons">
-                            <button type="submit" class="btn btn-primary">Add</button>
-                            <button type="button" class="btn btn-secondary btn-cancel-task" onclick="toggleTaskForm(3)">Cancel</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
+{% block header %}
+<div class="app-header">
+    <button class="btn btn-icon sidebar-toggle" onclick="toggleSidebar()">
+        <i class="bi bi-list"></i>
+    </button>
+    <div class="view-controls">
+        <button class="btn btn-primary active" onclick="setView('grid')">
+            <i class="bi bi-grid"></i> Grid View
+        </button>
+        <button class="btn btn-primary" onclick="setView('list')">
+            <i class="bi bi-list-ul"></i> List View
+        </button>
+    </div>
+    <div class="spacer"></div>
+</div>
+<h1>Four Quadrants Task Manager</h1>
+{% endblock %}
 
-            <!-- Quadrant 4 -->
-            <div class="quadrant" id="quadrant-4" data-quadrant="4">
-                <div class="quadrant-header q4">
-                    <div class="header-content">
-                        <div class="header-text">
-                            <div class="title-wrapper">
-                                <span class="quadrant-number">Q4:</span>
-                                <h2>Not Urgent & Not Important</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tasks-container">
-                    {% for task in tasks if task.quadrant == 4 and not task.completed and not task.is_deleted %}
-                    <div class="task-card" data-task-id="{{ task.id }}" data-quadrant="4">
-                        <div class="task-content">
-                            <div class="task-priority-indicator quadrant-4"></div>
-                            <h5 class="task-title">{{ task.title }}</h5>
-                            <p class="task-description">{{ task.description }}</p>
-                            {% if task.due_date %}
-                            <p class="task-due-date">Due: {{ task.due_date }}</p>
+{% block content %}
+<!-- Grid View -->
+<div class="grid-container" id="gridView">
+    <!-- ...existing quadrant code... -->
+    {% for quadrant in range(1, 5) %}
+    <div class="quadrant" id="quadrant-{{ quadrant }}" data-quadrant="{{ quadrant }}">
+        <div class="quadrant-header q{{ quadrant }}">
+            <div class="header-content">
+                <div class="header-text">
+                    <div class="title-wrapper">
+                        <span class="quadrant-number">Q{{ quadrant }}:</span>
+                        <h2>
+                            {% if quadrant == 1 %}
+                                Urgent & Important
+                            {% elif quadrant == 2 %}
+                                Not Urgent & Important
+                            {% elif quadrant == 3 %}
+                                Urgent & Not Important
+                            {% else %}
+                                Not Urgent & Not Important
                             {% endif %}
-                        </div>
-                        <div class="task-actions">
-                            <button class="btn-done" onclick="markTaskDone({{ task.id }}, false, this)">
-                                <i class="bi bi-check-circle"></i>
-                            </button>
-                            <button class="btn-delete" onclick="deleteTask({{ task.id }})">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
+                        </h2>
                     </div>
-                    {% endfor %}
                 </div>
-                <button class="btn-add-task" onclick="toggleTaskForm(4)">
-                    <i class="bi bi-plus"></i> Add Task
-                </button>
-                <form class="add-task-form" method="POST" action="/add_task">
-                    <div class="form-group">
-                        <input type="text" name="title" class="form-control mb-2" placeholder="Task title" required>
-                        <textarea name="description" class="form-control mb-2" placeholder="Description"></textarea>
-                        <input type="date" name="due_date" class="form-control mb-2">
-                        <input type="hidden" name="quadrant" value="4">
-                        <div class="form-buttons">
-                            <button type="submit" class="btn btn-primary">Add</button>
-                            <button type="button" class="btn btn-secondary btn-cancel-task" onclick="toggleTaskForm(4)">Cancel</button>
-                        </div>
-                    </div>
-                </form>
             </div>
         </div>
-
-        <!-- List View -->
-        <div id="listView" class="tasks-container list-view" style="display: none;">
-            <div class="list-container">
-                <!-- Add Task Button for List View -->
-                <div class="list-header">
-                    <button class="btn-add-task-list" onclick="toggleListTaskForm()">
-                        <i class="bi bi-plus-circle"></i>
-                        <span>Add Task</span>
+        <div class="tasks-container">
+            {% for task in tasks if task.quadrant == quadrant and not task.completed and not task.is_deleted %}
+            <div class="task-card" data-task-id="{{ task.id }}" data-quadrant="{{ quadrant }}">
+                <div class="task-content">
+                    <div class="task-priority-indicator quadrant-{{ quadrant }}"></div>
+                    <h5 class="task-title">{{ task.title }}</h5>
+                    <p class="task-description">{{ task.description }}</p>
+                    {% if task.due_date %}
+                    <p class="task-due-date">Due: {{ task.due_date }}</p>
+                    {% endif %}
+                </div>
+                <div class="task-actions">
+                    <button class="btn-done" onclick="markTaskDone({{ task.id }}, false, this)">
+                        <i class="bi bi-check-circle"></i>
+                    </button>
+                    <button class="btn-delete" onclick="deleteTask({{ task.id }})">
+                        <i class="bi bi-trash"></i>
                     </button>
                 </div>
-
-                <!-- Task Form for List View -->
-                <form action="{{ url_for('add_task') }}" method="POST" class="add-task-form list-task-form" style="display: none;">
-                    <div class="task-input-group">
-                        <input type="text" class="form-control" name="title" placeholder="Task title" required>
-                        <div class="task-details">
-                            <input type="date" class="form-control" name="due_date" placeholder="Time">
-                            <textarea class="form-control" name="description" placeholder="Description"></textarea>
-                        </div>
-                        <div class="quadrant-selector">
-                            <select name="quadrant" class="form-control" required>
-                                <option value="1">Urgent & Important</option>
-                                <option value="2">Not Urgent & Important</option>
-                                <option value="3">Urgent & Not Important</option>
-                                <option value="4">Not Urgent & Not Important</option>
-                            </select>
-                        </div>
-                        <div class="form-actions">
-                            <button type="submit" class="btn-confirm">
-                                <i class="bi bi-check-lg"></i>
-                            </button>
-                            <button type="button" class="btn-cancel" onclick="toggleListTaskForm()">
-                                <i class="bi bi-x-lg"></i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-
-                <!-- Existing Task List -->
-                <div class="task-list">
-                    {% for task in tasks|sort(attribute='quadrant') if not task.completed %}
-                    <div class="task-card" data-task-id="{{ task.id }}" data-quadrant="{{ task.quadrant }}">
-                        <div class="task-content">
-                            <div class="task-priority-indicator quadrant-{{ task.quadrant }}"></div>
-                            <h5>{{ task.title }}</h5>
-                            <p>{{ task.description }}</p>
-                            {% if task.due_date %}
-                            <p class="text-muted">Due: {{ task.due_date }}</p>
-                            {% endif %}
-                        </div>
-                        <button class="btn-done" onclick="markTaskDone({{ task.id }}, false, this)">
-                            <i class="bi bi-check-circle"></i>
-                        </button>
-                        <button class="btn-delete" onclick="deleteTask({{ task.id }})">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-                    {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        <button class="btn-add-task" onclick="toggleTaskForm({{ quadrant }})">
+            <i class="bi bi-plus"></i> Add Task
+        </button>
+        <form class="add-task-form" method="POST" action="/add_task">
+            <div class="form-group">
+                <input type="text" name="title" class="form-control mb-2" placeholder="Task title" required>
+                <textarea name="description" class="form-control mb-2" placeholder="Description"></textarea>
+                <input type="date" name="due_date" class="form-control mb-2">
+                <input type="hidden" name="quadrant" value="{{ quadrant }}">
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-primary">Add</button>
+                    <button type="button" class="btn btn-secondary btn-cancel-task">Cancel</button>
                 </div>
             </div>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- List View -->
+<div id="listView" class="tasks-container list-view" style="display: none;">
+    <div class="list-container">
+        <!-- Add Task Button for List View -->
+        <div class="list-header">
+            <button class="btn-add-task-list" onclick="toggleListTaskForm()">
+                <i class="bi bi-plus-circle"></i>
+                <span>Add Task</span>
+            </button>
         </div>
 
-        <div class="history-sidebar" id="historySidebar">
-            <div class="sidebar-header">
-                <h4>Task History</h4>
-                <button class="btn-close" onclick="toggleSidebar()"></button>
+        <!-- Task Form for List View -->
+        <form action="{{ url_for('add_task') }}" method="POST" class="add-task-form list-task-form" style="display: none;">
+            <div class="task-input-group">
+                <input type="text" class="form-control" name="title" placeholder="Task title" required>
+                <div class="task-details">
+                    <input type="date" class="form-control" name="due_date" placeholder="Time">
+                    <textarea class="form-control" name="description" placeholder="Description"></textarea>
+                </div>
+                <div class="quadrant-selector">
+                    <select name="quadrant" class="form-control" required>
+                        <option value="1">Urgent & Important</option>
+                        <option value="2">Not Urgent & Important</option>
+                        <option value="3">Urgent & Not Important</option>
+                        <option value="4">Not Urgent & Not Important</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-confirm">
+                        <i class="bi bi-check-lg"></i>
+                    </button>
+                    <button type="button" class="btn-cancel" onclick="toggleListTaskForm()">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
             </div>
-            
-            <!-- Vertical Navigation List -->
-            <div class="sidebar-nav">
-                <div class="nav-item active" data-tab="completed">
-                    <span class="nav-text">Completed</span>
-                    <span class="badge bg-success" id="completedCount">0</span>
-                </div>
-                <div class="nav-item" data-tab="deleted">
-                    <span class="nav-text">Deleted</span>
-                    <span class="badge bg-danger" id="deletedCount">0</span>
-                </div>
-                <div class="nav-item disabled">
-                    <span class="nav-text">New Features</span>
-                    <small class="coming-soon">(Coming Soon)</small>
-                </div>
-                <div class="nav-item" onclick="window.location.href='/goals'">
-                    <span class="nav-text">Goals</span>
-                    <i class="bi bi-arrow-right"></i>
-                </div>
-            </div>
+        </form>
 
-            <!-- Content Area -->
-            <div class="sidebar-content">
-                <div class="tab-content active" id="completed">
-                    <div id="completedTasks" class="history-task-list"></div>
+        <!-- Existing Task List -->
+        <div class="task-list">
+            {% for task in tasks|sort(attribute='quadrant') if not task.completed %}
+            <div class="task-card" data-task-id="{{ task.id }}" data-quadrant="{{ task.quadrant }}">
+                <div class="task-content">
+                    <div class="task-priority-indicator quadrant-{{ task.quadrant }}"></div>
+                    <h5>{{ task.title }}</h5>
+                    <p>{{ task.description }}</p>
+                    {% if task.due_date %}
+                    <p class="text-muted">Due: {{ task.due_date }}</p>
+                    {% endif %}
                 </div>
-                <div class="tab-content" id="deleted">
-                    <div id="deletedTasks" class="history-task-list"></div>
-                </div>
+                <button class="btn-done" onclick="markTaskDone({{ task.id }}, false, this)">
+                    <i class="bi bi-check-circle"></i>
+                </button>
+                <button class="btn-delete" onclick="deleteTask({{ task.id }})">
+                    <i class="bi bi-trash"></i>
+                </button>
             </div>
+            {% endfor %}
         </div>
     </div>
-
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <div class="sidebar-overlay"></div>
-</body>
-</html>
+</div>
+{% endblock %}

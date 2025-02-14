@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Pomodoro Timer{% endblock %}
+
+{% block header %}
+<header class="app-header">
+    <button class="sidebar-toggle" onclick="toggleSidebar()">
+        <i class="bi bi-list"></i>
+    </button>
+    <h1>Pomodoro Timer</h1>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="pomodoro-container">
+    <div class="timer-section">
+        <div class="timer-circle">
+            <div id="timerMode" class="timer-mode">Focus Time</div>
+            <div id="timeDisplay" class="time-display">25:00</div>
+            <div class="pomodoro-stats">
+                <span>Completed: <span id="completedCount">0</span></span>
+            </div>
+            <div class="progress-ring">
+                <svg class="progress-ring__circle" width="400" height="400">
+                    <circle class="progress-ring__circle-bg" r="175" cx="200" cy="200"/>
+                    <circle id="progressIndicator" class="progress-ring__circle-progress" r="175" cx="200" cy="200"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="main-controls">
+            <button id="toggleTimer" class="btn btn-primary btn-large">Start</button>
+            <button id="resetTimer" class="btn btn-secondary">Reset</button>
+            <button id="skipPhase" class="btn btn-secondary">Skip</button>
+        </div>
+    </div>
+
+    <div class="settings-panel">
+        <button id="settingsToggle" class="settings-toggle">
+            <i class="bi bi-gear"></i>
+        </button>
+        <div id="settingsContent" class="settings-content hidden">
+            <h3>Timer Settings</h3>
+            <div class="duration-settings">
+                <div class="duration-control">
+                    <label>Work Duration (minutes)</label>
+                    <div class="slider-container">
+                        <input type="range" id="workDuration" min="1" max="60" value="25" class="duration-slider">
+                        <span class="duration-value" id="workDurationValue">25</span>
+                    </div>
+                </div>
+
+                <div class="duration-control">
+                    <label>Short Break (minutes)</label>
+                    <div class="slider-container">
+                        <input type="range" id="shortBreakDuration" min="1" max="15" value="5" class="duration-slider">
+                        <span class="duration-value" id="shortBreakValue">5</span>
+                    </div>
+                </div>
+
+                <div class="duration-control">
+                    <label>Long Break (minutes)</label>
+                    <div class="slider-container">
+                        <input type="range" id="longBreakDuration" min="5" max="30" value="15" class="duration-slider">
+                        <span class="duration-value" id="longBreakValue">15</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/pomodoro.js') }}"></script>
+{% endblock %}
