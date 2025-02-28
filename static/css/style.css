@@ -10,31 +10,155 @@
 }
 
 html, body {
-    height: 100vh;
+    height: 100%;
+    width: 100%; /* Explicitly set width to 100% */
     margin: 0;
     padding: 0;
     background-color: var(--bg-grey);
     color: var(--text-dark);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    overflow: hidden;
+    overflow: hidden; /* Prevent scrolling on the body */
 }
 
+/* Main container - uses CSS Grid for full-height layout */
 .app-container {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    padding: 1rem;
+    display: grid;
+    grid-template-rows: auto auto 1fr; /* Header, Title, Content */
+    width: 100vw; /* Use viewport width */
+    height: 100vh; /* Use viewport height */
+    max-width: 100%; /* Prevent horizontal overflow */
     box-sizing: border-box;
+    padding: 1rem;
+    gap: 1rem;
+    overflow: hidden; /* Contain everything inside */
+}
+
+/* Header styling */
+.app-header {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    justify-content: space-between;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 h1 {
     color: var(--primary-red);
     font-weight: bold;
     font-size: 1.75rem;
-    margin: 0 0 1rem 0;
+    margin: 0;
     text-align: center;
-    flex-shrink: 0;
+}
+
+/* Grid Container - uses CSS Grid with auto-fit for responsive quadrants */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* Use minmax for better width control */
+    gap: 1.5rem;
+    padding: 1rem;
+    width: 100%;
+    max-width: 1400px; /* Maximum width for larger screens */
+    margin: 0 auto;
+    overflow: auto;
+}
+
+/* Quadrant styling */
+.quadrant {
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Take full width of grid cell */
+    min-width: 0; /* Prevent overflow in flex items */
+    background: white;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    min-height: 300px; /* Minimum height for better appearance */
+    height: 100%;
+}
+
+/* Task list within quadrants */
+.task-list {
+    flex: 1;
+    width: 100%;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    margin-top: 1rem;
+}
+
+/* Media queries for responsive design */
+@media (max-width: 768px) {
+    .app-container {
+        padding: 0.5rem;
+        width: 100%;
+        height: 100%;
+        overflow: auto; /* Allow scrolling on mobile */
+    }
+
+    .grid-container {
+        grid-template-columns: 1fr; /* Stack quadrants on mobile */
+        gap: 1rem;
+        padding: 0.5rem;
+        width: 100%;
+    }
+
+    .quadrant {
+        min-height: 250px;
+        width: 100%;
+    }
+
+    .app-header {
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0.5rem;
+    }
+
+    .view-controls {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .view-controls .btn {
+        flex: 1;
+    }
+}
+
+/* Custom scrollbar styling */
+.task-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.task-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.task-list::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.task-list::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Ensure content fills available space */
+.tasks-container {
+    height: 100%;
+    overflow-y: auto;
+}
+
+/* List view responsive styling */
+.list-view {
+    height: 100%;
+    overflow-y: auto;
+    padding: 1rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .quadrants-grid {
@@ -79,6 +203,8 @@ h1 {
 }
 
 .task-card {
+    width: 100%;
+    min-width: 0; /* Prevent flex item overflow */
     background: white;
     border-radius: 8px;
     padding: 1rem;
